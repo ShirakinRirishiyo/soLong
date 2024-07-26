@@ -12,7 +12,6 @@
 
 #include <unistd.h>
 #include <stdio.h>
-#include "minilibx-linux"
 #include "so_long.h"
 
 void dibujo_mapa(t_mapa *data)

@@ -1,9 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
-#include "libreria.h"
+
+#include <so_long.h>
 
 typedef struct s_mapa{
 	

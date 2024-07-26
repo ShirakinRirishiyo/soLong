@@ -18,7 +18,15 @@
 # include <fcntl.h>
 #include "../printf/libft/libft.h"
 #include "../printf/ft_printf.h"
-#include "../minilibx/mlx_init.c"
+#include "../minilibx/mlx_int.h"
+
+# define ESC	53
+# define W		13
+# define A		0
+# define S		1
+# define D		2
+# define SPRITE_SIZE 32
+
 
 typedef struct s_check
 {
@@ -35,8 +43,6 @@ typedef struct s_imagenes
     void *winner;
 }   t_imagenes;
 
-
-
 typedef struct s_mapa {
     char *filename; // Nombre del archivo del mapa
     char *map;     // Contenido completo del mapa en una sola cadena
@@ -46,6 +52,8 @@ typedef struct s_mapa {
     int x; //para actualizar la posicion del jugador
     int y; // para actualzar la posicion del jugador
     int player;  //jugador
+    int current_frame;
+    int total_frames;
     int colectables; //cositas para comer
     int end;  //una sola salida
     void *mlx;//para iniciar la biblioteca

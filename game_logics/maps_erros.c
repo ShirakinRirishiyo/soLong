@@ -6,16 +6,10 @@
 /*   By: dediaz-f <dediaz-f@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 13:20:59 by dediaz-f          #+#    #+#             */
-/*   Updated: 2024/07/23 17:01:09 by dediaz-f         ###   ########.fr       */
+/*   Updated: 2024/07/26 09:15:24 by dediaz-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "get_next_line.h"
 #include "so_long.h"
 
 #define VALIDOS "10CPE"
@@ -83,8 +77,8 @@ void comprobacion_open_ber(t_mapa *data)
         exit(EXIT_FAILURE);
     }
     close(file);
-    longitud = strlen(data->filename);
-    if (longitud < 4 || strcmp(&data->filename[longitud - 4], ".ber") != 0) {
+    longitud = ft_strlen(data->filename);
+    if (longitud < 4 || ft_strcmp(&data->filename[longitud - 4], ".ber") != 0) {
         ft_printf("Error: el archivo debe tener la extensión .ber\n");
         exit(EXIT_FAILURE); // Salir del programa si la extensión es incorrecta
     }
@@ -101,8 +95,8 @@ int check_rectangular(t_mapa *mapa)
     int fd = open(mapa->filename, O_RDONLY);
     if (fd == -1) 
     {
-        perror("Error opening file");
-        return -1;
+        ft_printf("Error opening file\n");
+        exit(EXIT_FAILURE);
     }
     while ((line = get_next_line(fd)) != NULL) 
     {
