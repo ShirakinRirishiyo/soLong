@@ -13,64 +13,111 @@
 #include "so_long.h"
 
 
-void malloc_fail(void)
-{
-	ft_printf("Error\n");
-	exit(EXIT_FAILURE);
+// Función para manejar fallos de memoria
+void malloc_fail(void) {
+    perror("Memory allocation error");
+    exit(EXIT_FAILURE);
 }
 
-void read_map(t_mapa *data)
-{
-	char *line;
-	int fd;
-	int i;
+// Función para calcular el tamaño del mapa
+void mapa_size(t_mapa *data) {
+    char *line;
+    int fd;
 
-	fd = open(data->map, O_RDONLY);
-	if(fd == -1)
-		return;
-	data->maps2 = (char **)malloc(sizeof(char *) * data->height + 1);
-	if(!data->maps2)
-		malloc_fail();
-	while(i < data->height)
-	{
-		line = get_next_line(fd);
-		if(!line)
-			malloc_fail();
-		data->maps2[i] = ft_strdup(line);
-		if(!data->maps2[i])
-			malloc_fail();
-		data->maps2[i][data->width] = '\0';
-		i++;
-		free(line);
-	}
-	data->maps2[i] = NULL;
-	close(fd)
+    fd = open(data->text, O_RDONLY);
+    if (fd == -1) {
+        perror("Failed to open file");
+        exit(EXIT_FAILURE);
+    }
+
+    data->width = 0;
+    data->height = 0;
+
+    while ((line = get_next_line(fd)) != NULL) {
+        // Eliminar el carácter de nueva línea si existe
+        int line_length = strlen(line);
+        if (line[line_length - 1] == '\n') {
+            line[line_length - 1] = '\0';
+            line_length--;
+        }
+
+        if (data->height == 0) {
+            data->width = line_length;  // Establecer el ancho basado en la primera línea
+        } else if (line_length != data->width) {
+            fprintf(stderr, "Error\nMap not valid at line %d\n", data->height + 1);
+            free(line);
+            close(fd);
+            exit(EXIT_FAILURE);
+        }
+
+        data->height++;
+        free(line);
+    }
+
+    if (data->height == 0) {
+        fprintf(stderr, "Error\nEmpty map\n");
+        close(fd);
+        exit(EXIT_FAILURE);
+    }
+
+    printf("Map width: %d\n", data->width);
+    printf("Map height: %d\n", data->height);
+
+    close(fd);
 }
 
-void mapa_size(t_mapa *data)
-{
-	char *line;
-	int fd;
-	
-	fd = open(data->map, O_RDONLY);
-	line = get_next_line(fd);
-	if(!line)
-	{
-		ft_printf("Error\n");
-		exit(EXIT_FAILURE);
-	}
-	data->width = strlen(line) - 1;
-	data->height = 0;
-	while(line)
-	{
-		if((int)ft_strlen(line) - 1 != data->width)
-			ft_printf("Error/Mapa invalido\n");
-			exit(EXIT_FAILURE);
-			data->heigth++;
-			free(line)
-			line = get_next_line(fd);
+// Función para leer el mapa
+void read_map(t_mapa *data) {
+    char *line;
+    int fd;
+    int i;
 
-	}
-	line = NULL;
-	close(fd);
+    fd = open(data->text, O_RDONLY);
+    if (fd == -1) {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
+    }
+
+    data->map = (char **)malloc(sizeof(char *) * (data->height + 1));
+    if (!data->map) {
+        malloc_fail();
+    }
+
+    i = 0;
+    while (i < data->height) {
+        line = get_next_line(fd);
+        if (!line) {
+            perror("Error reading file");
+            close(fd);
+            exit(EXIT_FAILURE);
+        }
+
+        int line_length = ft_strlen(line);
+        if (line[line_length - 1] == '\n') {
+            line[line_length - 1] = '\0';
+            line_length--;
+        }
+
+        if (line_length != data->width) {
+            fprintf(stderr, "Error\nMap row width mismatch at row %d\n", i + 1);
+            free(line);
+            close(fd);
+            exit(EXIT_FAILURE);
+        }
+
+        data->map[i] = (char *)malloc(sizeof(char) * (data->width + 1));
+        if (!data->map[i]) {
+            malloc_fail();
+        }
+
+        ft_strlcpy(data->map[i], line, data->width + 1);
+        data->map[i][data->width] = '\0';
+
+        printf("Map row %d: %s\n", i, data->map[i]);
+
+        free(line);
+        i++;
+    }
+    data->map[i] = NULL;
+    close(fd);
 }

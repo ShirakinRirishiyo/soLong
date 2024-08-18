@@ -11,114 +11,137 @@
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
-size_t	ft_strlen_gnl(const char *s)
-{
-	size_t		i;
+#define BUFFER_SIZE 1024
 
-	if (!s || !s[0])
-		return (0);
-	i = 0;
-	while (s[i] != '\0')
-		i++;
-	return (i);
+// Función auxiliar para encontrar el primer salto de línea en una cadena
+char *ft_strchr_gnl(const char *s, int c) {
+    while (*s) {
+        if (*s == (char)c) {
+            return (char *)s;
+        }
+        s++;
+    }
+    return NULL;
 }
 
-/**
- * Duplicates a string up to a given length.
- */
-static char	*process_line(const char *buffer, int length)
-{
-	char	*line;
+// Función auxiliar para concatenar dos cadenas
+char *strjoin_and_free(char *s1, const char *s2) {
+    char *result;
+    size_t len1, len2;
 
-	line = malloc(length + 1);
-	if (!line)
-		return (NULL);
-	ft_strlcpy_gnl(line, buffer, length + 1);
-	line[length] = '\0';
-	return (line);
+    if (!s1) {
+        s1 = malloc(1);
+        if (!s1)
+            return NULL;
+        *s1 = '\0';
+    }
+    len1 = strlen(s1);
+    len2 = strlen(s2);
+    result = malloc(len1 + len2 + 1);
+    if (!result)
+        return NULL;
+    memcpy(result, s1, len1);
+    memcpy(result + len1, s2, len2 + 1);
+    free(s1);
+    return result;
 }
 
-static ssize_t	read_and_append(int fd, char **result, char *buffer)
-{
-	ssize_t		bytes_read;
-
-	bytes_read = 1;
-	while (bytes_read != 0 && ft_strchr_gnl(*result, '\n') == NULL)
-	{
-		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == -1)
-			return (-1);
-		buffer[bytes_read] = '\0';
-		*result = strjoin_and_free(*result, buffer);
-	}
-	return (bytes_read);
+// Función auxiliar para duplicar una cadena
+char *ft_strdup_gnl(const char *s) {
+    size_t len = ft_strlen(s);
+    char *dup = malloc(len + 1);
+    if (!dup)
+        return NULL;
+   ft_memcpy(dup, s, len + 1);
+    return dup;
 }
 
-static char	*process_and_update(char **result, ssize_t line_length)
-{
-	char	*line;
-	char	*remaining;
+// Función auxiliar para copiar una cadena
+void ft_strlcpy_gnl(char *dst, const char *src, size_t dstsize) {
+    size_t i;
 
-	line = process_line(*result, line_length);
-	if (!line)
-		return (free(*result), NULL);
-	remaining = ft_strdup_gnl(*result + line_length);
-	free(*result);
-	*result = remaining;
-	return (line);
+    if (dstsize == 0)
+        return;
+    i = 0;
+    while (src[i] && i < dstsize - 1) {
+        dst[i] = src[i];
+        i++;
+    }
+    dst[i] = '\0';
 }
 
-/**
- * Gets the next line from the file represented by fd.
- */
-char	*get_next_line(int fd)
-{
-	static char		*result;
-	char			*line;
-	char			*buffer;
-	ssize_t			read_result;
+// Procesa la línea de la cadena del buffer
+char *process_line(const char *buffer, int length) {
+    char *line;
 
-	if (BUFFER_SIZE <= 0 || fd < 0)
-	return NULL;
-		result = ft_strdup_gnl("");
-	buffer = (char *)malloc((BUFFER_SIZE * sizeof(char)) + 1);
-	if (buffer == NULL)
-		return (NULL);
-	read_result = read_and_append(fd, &result, buffer);
-	free(buffer);
-	if (read_result < 0 || ft_strlen_gnl(result) == 0)
-		return (free(result), result = NULL, NULL);
-	if (!ft_strchr_gnl(result, '\n'))
-	{
-		line = ft_strdup_gnl(result);
-		return (free(result), result = NULL, line);
-	}
-	read_result = ft_strchr_gnl(result, '\n') - result;
-	line = process_and_update(&result, read_result + 1);
-	return (line);
+    line = malloc(length + 1);
+    if (!line)
+        return NULL;
+    ft_strlcpy_gnl(line, buffer, length + 1);
+    return line;
 }
 
+// Lee del archivo y añade el contenido al resultado
+ssize_t read_and_append(int fd, char **result, char *buffer) {
+    ssize_t bytes_read;
 
-#include <stdio.h>
+    bytes_read = 1;
+    while (bytes_read > 0 && !ft_strchr_gnl(*result, '\n')) {
+        bytes_read = read(fd, buffer, BUFFER_SIZE);
+        if (bytes_read == -1)
+            return -1;
+        buffer[bytes_read] = '\0';
+        *result = strjoin_and_free(*result, buffer);
+    }
+    return bytes_read;
+}
 
-int main()
-{
-	int fd;
-	char *line;
+// Procesa y actualiza el resultado
+char *process_and_update(char **result, ssize_t line_length) {
+    char *line;
+    char *remaining;
 
-	fd = open("text.txt", O_RDONLY);
-	if(fd == -1 )
-	{
-		printf("Error");
-		return 1;
-	}
-	while((line = get_next_line(fd)))
-	{
-		printf("Linea leida:%s\n", line);
-		free(line);
-	}
+    line = process_line(*result, line_length);
+    if (!line)
+        return (free(*result), NULL);
+    remaining = ft_strdup_gnl(*result + line_length);
+    free(*result);
+    *result = remaining;
+    return line;
+}
 
-	close(fd);
-	return 0;
+// Obtiene la siguiente línea del archivo
+char *get_next_line(int fd) {
+    static char *result;
+    char *line;
+    char *buffer;
+    ssize_t read_result;
+
+    if (BUFFER_SIZE <= 0 || fd < 0)
+        return NULL;
+    if (!result)
+        result = ft_strdup_gnl("");
+    buffer = (char *)malloc(BUFFER_SIZE + 1);
+    if (!buffer)
+        return NULL;
+    read_result = read_and_append(fd, &result, buffer);
+    free(buffer);
+    if (read_result < 0 || !*result) {
+        free(result);
+        result = NULL;
+        return NULL;
+    }
+    if (!ft_strchr_gnl(result, '\n')) {
+        line = ft_strdup_gnl(result);
+        free(result);
+        result = NULL;
+        return line;
+    }
+    read_result = ft_strchr_gnl(result, '\n') - result + 1;
+    line = process_and_update(&result, read_result);
+    return line;
 }

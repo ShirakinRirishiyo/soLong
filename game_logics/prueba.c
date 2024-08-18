@@ -1,66 +1,93 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#define N 12
-#define M 44
+#define MAX_FILAS 100
+#define MAX_COLUMNAS 100
 
-int findPath(char maze[N][M], int visited[N][M], int i, int j) {
-    // Caso base: si llegamos a la salida
-    if (maze[i][j] == 'E') {
-        printf("Llegamos a la salida (%d, %d)\n", i, j);
-        return 1;
+typedef struct s_mapa {
+    char **maps2;  // Matriz de caracteres para el mapa
+    int height;    // Número de filas del mapa
+    int width;     // Número de columnas del mapa
+} t_mapa;
+
+// Función para calcular el tamaño del mapa y leerlo
+void leer_mapa(const char *mapa_str, t_mapa *mapa) {
+    const char *ptr = mapa_str;
+    char *linea;
+    int fila = 0;
+
+    // Contar el número de filas
+    mapa->height = 0;
+    while (*ptr) {
+        if (*ptr == '\n') {
+            mapa->height++;
+        }
+        ptr++;
     }
-    
-    // Marcar la celda actual como visitada
-    visited[i][j] = 1;
+    mapa->height++; // Para la última línea sin '\n'
 
-    // Movimiento posible (arriba, abajo, izquierda, derecha)
-    int moveI[] = {-1, 1, 0, 0};
-    int moveJ[] = {0, 0, -1, 1};
+    // Contar el número de columnas (asumiendo que todas las filas tienen el mismo tamaño)
+    ptr = mapa_str;
+    mapa->width = 0;
+    while (*ptr != '\n' && *ptr != '\0') {
+        mapa->width++;
+        ptr++;
+    }
 
-    for (int k = 0; k < 4; k++) {
-        int nextI = i + moveI[k];
-        int nextJ = j + moveJ[k];
+    // Reservar memoria para el mapa
+    mapa->maps2 = (char **)malloc(mapa->height * sizeof(char *));
+    for (int i = 0; i < mapa->height; i++) {
+        mapa->maps2[i] = (char *)malloc((mapa->width + 1) * sizeof(char)); // +1 para el carácter nulo
+    }
 
-        // Verificar si el siguiente movimiento es válido
-        if (nextI >= 0 && nextI < N && nextJ >= 0 && nextJ < M &&
-            maze[nextI][nextJ] != '1' && visited[nextI][nextJ] == 0) {
-            printf("Moviendo a (%d, %d)\n", nextI, nextJ);
-
-            if (findPath(maze, visited, nextI, nextJ)) {
-                return 1; // Encontramos la salida
+    // Leer el contenido del mapa
+    ptr = mapa_str;
+    for (int i = 0; i < mapa->height; i++) {
+        linea = mapa->maps2[i];
+        for (int j = 0; j < mapa->width; j++) {
+            if (*ptr != '\0' && *ptr != '\n') {
+                *linea++ = *ptr++;
             }
         }
+        *linea = '\0'; // Terminar la cadena de caracteres
+        if (*ptr == '\n') {
+            ptr++; // Saltar el carácter de nueva línea
+        }
     }
+}
 
-    // Desmarcar la celda actual para permitir otras rutas
-    visited[i][j] = 0;
-    return 0; // No se encontró la salida desde esta ruta
+// Función para imprimir el mapa
+void imprimir_mapa(const t_mapa *mapa) {
+    for (int i = 0; i < mapa->height; i++) {
+        printf("%s\n", mapa->maps2[i]);
+    }
+}
+
+// Función para liberar la memoria del mapa
+void liberar_mapa(t_mapa *mapa) {
+    for (int i = 0; i < mapa->height; i++) {
+        free(mapa->maps2[i]);
+    }
+    free(mapa->maps2);
 }
 
 int main() {
-    char maze[N][M] = {
-    {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'},
-    {'1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 'C', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'},
-    {'1', '0', '0', '0', '0', 'C', '0', '0', '0', '0', '0', '0', 'C', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'},
-    {'1', '0', '0', 'P', '0', '0', '0', '0', '0', '0', '0', '0', '0', 'C', '0', '0', '0', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'},
-    {'1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 'C', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1'},
-    {'1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 'C', '0', '0', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1'},
-    {'1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 'C', '0', '0', '0', '0', '0', 'C', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1'},
-    {'1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 'C', '0', '0', '0', '0', 'C', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1'},
-    {'1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 'E', '0', 'C', '0', '0', '0', '0', '0', 'C', '0', '0', '0', '0', '0', '1', '1', '1'},
-    {'1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 'C', '0', '0', '0', '0', '0', '0', '0', 'C', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1'},
-    {'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'}
-};
+    t_mapa mapa;
+    const char *mapa_str = 
+        "111111111111\n"
+        "100010010001\n"
+        "1P00010C0001\n"
+        "1C00C00CE001\n"
+        "10000000C001\n"
+        "111111111101\n";
     
-    int visited[N][M] = {0};
-    int startI = 0, startJ = 0;
+    leer_mapa(mapa_str, &mapa);
 
-    printf("Buscando camino desde (%d, %d)\n", startI, startJ);
-    if (findPath(maze, visited, startI, startJ)) {
-        printf("¡Camino encontrado!\n");
-    } else {
-        printf("No se encontró ningún camino.\n");
-    }
+    printf("Mapa:\n");
+    imprimir_mapa(&mapa);
+
+    liberar_mapa(&mapa);
 
     return 0;
 }

@@ -21,7 +21,7 @@
 # include <stdint.h>
 
 # ifndef BUFFER_SIZE 
-#  define BUFFER_SIZE 1000000
+#  define BUFFER_SIZE 1024
 # endif
 
 # include <stddef.h>
@@ -31,11 +31,12 @@
 
 char	*get_next_line(int fd);
 size_t	ft_strlen_gnl(const char *s);
-char	*strjoin_and_free(char *s1, const char *s2);
 void	*ft_memcpy_gnl(void *dst, const void *src, size_t n);
 char	*ft_strchr_gnl(const char *s, int c);
-size_t	ft_strlcpy_gnl(char *dst, const char *src, size_t dstsize);
-char	*ft_strdup_gnl(const char *s1);
+char *ft_strchr_gnl(const char *s, int c);
+char *strjoin_and_free(char *s1, const char *s2);
+char *ft_strdup_gnl(const char *s);
+void ft_strlcpy_gnl(char *dst, const char *src, size_t dstsize);
 
 int		ft_isalnum(int c);
 int		ft_isalpha(int c);
@@ -62,7 +63,7 @@ void	ft_striteri(char *s, void (*f)(unsigned int, char *));
 char	*ft_strjoin(char const *s1, char const *s2);
 size_t	ft_strlcat(char *dst, const char *src, size_t dstsize);
 size_t	ft_strlcpy(char *dest, char const *src, size_t n);
-size_t	ft_strlen(char const *str);
+size_t	ft_strlen(const char *str);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 int		ft_strncmp(char const *s1, char const *s2, size_t n);
 char	*ft_strnstr(char const *haystack, char const *needle, size_t n);

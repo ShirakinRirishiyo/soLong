@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-char	*ft_strdup_gnl(const char *s1)
+/*char	*ft_strdup_gnl(const char *s1)
 {
 	size_t	len;
 	char	*dest;
@@ -33,9 +33,9 @@ char	*ft_strdup_gnl(const char *s1)
 	return (ptr);
 }
 
-/**
  * Concatenates two strings and frees the first one.
  */
+/*
 char	*strjoin_and_free(char *s1, const char *s2)
 {
 	size_t		len1;
@@ -101,4 +101,4 @@ void	*ft_memcpy_gnl(void *dst, const void *src, size_t n)
 		*pdst++ = *psrc++;
 	}
 	return (dst);
-}
+}*/
