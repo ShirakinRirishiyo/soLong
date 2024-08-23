@@ -31,17 +31,16 @@
 
 
 // Definir rutas para las imágenes
-# define WALL_IMAGE "../sprites/Tower_red.xpm"
-# define SPACE_IMAGE "../sprites/cesped_verde.xpm"
-# define PLAYER_UP_IMAGE "../sprites/player_up.xpm"
-# define PLAYER_DOWN_IMAGE "../sprites/player_down.xpm"
-# define PLAYER_LEFT_IMAGE "../sprites/player_left.xpm"
-# define PLAYER_RIGHT_IMAGE "../sprites/player_rigth.xpm"
-# define COLLECT1_IMAGE "../sprites/orito_abajo.xpm"
-# define COLLECT2_IMAGE "../sprites/orito_arriba.xpm"
-# define EXIT_IMAGE "../sprites/Castle_purple.xpm"
-# define FIRE1_IMAGE "../sprites/fuego_abajo.xpm"
-# define FIRE2_IMAGE "../sprites/fuego_arriba.xpm"
+# define WALL_IMAGE "../sprites/house.xpm"
+# define SPACE_IMAGE "../sprites/cesped.xpm"
+# define PLAYER_F1 "../sprites/player_frame1.xpm"
+# define PLAYER_F2 "../sprites/player_frame2.xpm"
+# define PLAYER_F3 "../sprites/player_frame3.xpm"
+# define COLLECT1_IMAGE "../sprites/oritoabajo.xpm"
+# define COLLECT2_IMAGE "../sprites/oritoarriba.xpm"
+# define EXIT_IMAGE "../sprites/castle_purple.xpm"
+# define FIRE1_IMAGE "../sprites/fuegoabajo.xpm"
+# define FIRE2_IMAGE "../sprites/fuegoarriba.xpm"
 
 # define VALIDOS "10CPE"
 
@@ -55,10 +54,9 @@ typedef struct s_check
 typedef struct s_imagenes {
     void *wall;
     void *space;
-    void *player_up;
-    void *player_down;
-    void *player_left;
-    void *player_right;
+    void *player_frame1;
+    void *player_frame2;
+    void *player_frame3;
     void *collect;
     void *collect2;
     void *exit;

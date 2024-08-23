@@ -37,10 +37,9 @@ int cargar_imagenes(t_mapa *data)
     // Cargar las imágenes usando las rutas definidas
     if (cargar_imagen(data, &(data->imagenes->wall), WALL_IMAGE)) return 1;
     if (cargar_imagen(data, &(data->imagenes->space), SPACE_IMAGE)) return 1;
-    if (cargar_imagen(data, &(data->imagenes->player_up), PLAYER_UP_IMAGE)) return 1;
-    if (cargar_imagen(data, &(data->imagenes->player_down), PLAYER_DOWN_IMAGE)) return 1;
-    if (cargar_imagen(data, &(data->imagenes->player_left), PLAYER_LEFT_IMAGE)) return 1;
-    if (cargar_imagen(data, &(data->imagenes->player_right), PLAYER_RIGHT_IMAGE)) return 1;
+    if (cargar_imagen(data, &(data->imagenes->player_frame1), PLAYER_F1)) return 1;
+    if (cargar_imagen(data, &(data->imagenes->player_frame2), PLAYER_F2)) return 1;
+    if (cargar_imagen(data, &(data->imagenes->player_frame3), PLAYER_F3)) return 1;
     if (cargar_imagen(data, &(data->imagenes->collect), COLLECT1_IMAGE)) return 1;
     if (cargar_imagen(data, &(data->imagenes->collect2), COLLECT2_IMAGE)) return 1;
     if (cargar_imagen(data, &(data->imagenes->exit), EXIT_IMAGE)) return 1;

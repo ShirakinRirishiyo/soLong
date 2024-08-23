@@ -22,75 +22,65 @@ int es_pared_bordeadora(t_mapa *data, int j, int i) {
     return 0;  // Falso: no es una pared bordeadora
 }
 
-void dibujo_mapa(t_mapa *data) {
-    int i;
-    int j;
 
-    // Verificar que los datos estén correctamente inicializados
+void dibujar_elemento(void *mlx, void *win, void *img, int x, int y) {
+    if (mlx_put_image_to_window(mlx, win, img, x * 40, y * 40) != 0) {
+        printf("Error al dibujar en (%d, %d)\n", y, x);
+    }
+}
+
+
+void dibujar_elemento_del_mapa(t_mapa *data, int i, int j, int anim_frame) {
+    switch (data->map[i][j]) {
+        case '1':
+            if (es_pared_bordeadora(data, j, i)) {
+                dibujar_elemento(data->mlx, data->win, data->imagenes->wall, j, i);
+            } else {
+                dibujar_elemento(data->mlx, data->win, data->imagenes->fuego1, j, i);
+            }
+            break;
+        case '0':
+            dibujar_elemento(data->mlx, data->win, data->imagenes->space, j, i);
+            break;
+        case 'P':
+            {
+                void *player_frames[] = {
+                    data->imagenes->player_frame1,  // Frame 0
+                    data->imagenes->player_frame2,// Frame 1
+                    data->imagenes->player_frame3 // Frame 2
+                };
+                dibujar_elemento(data->mlx, data->win, player_frames[anim_frame], j, i);
+            }
+            break;
+        case 'C':
+            dibujar_elemento(data->mlx, data->win, data->imagenes->collect, j, i);
+            break;
+        case 'E':
+            dibujar_elemento(data->mlx, data->win, data->imagenes->exit, j, i);
+            break;
+        default:
+            printf("Error: Carácter no válido '%c' en (%d, %d)\n", data->map[i][j], i, j);
+    }
+}
+
+
+void dibujo_mapa(t_mapa *data) {
+    int i = 0;
+    int j;
+    static int anim_frame = 0;
+
     if (data == NULL || data->map == NULL || data->imagenes == NULL) {
         printf("Error: Datos no inicializados.\n");
         return;
     }
+
+    anim_frame = (anim_frame + 1) % 3; // Cambiar frame
+
     printf("Dibujando el mapa...\n");
-    // Iterar sobre cada fila del mapa
-    i = 0;
-    while (data->map[i]) 
-    {
+    while (data->map[i]) {  // Iterar sobre cada fila del mapa
         j = 0;
-        while (data->map[i][j]) 
-        {
-            // Debug: Imprimir coordenadas y contenido del mapa
-            printf("Dibujando en (%d, %d): %c\n", i, j, data->map[i][j]);
-            // Dibujar diferentes elementos del mapa
-            if (data->map[i][j] == '1') {
-                if (es_pared_bordeadora(data, j, i)) {
-                    printf("Dibujando pared bordeadora en (%d, %d)\n", i, j);
-                    if (mlx_put_image_to_window(data->mlx, data->win,
-                        data->imagenes->wall, j * 40, i * 40) != 0) {
-                        printf("Error al dibujar pared bordeadora en (%d, %d)\n", i, j);
-                    }
-                } else {
-                    if (data->animacion_fuego) {
-                        printf("Dibujando fuego1 en (%d, %d)\n", i, j);
-                        if (mlx_put_image_to_window(data->mlx, data->win,
-                            data->imagenes->fuego1, j * 40, i * 40) != 0) {
-                            printf("Error al dibujar fuego1 en (%d, %d)\n", i, j);
-                        }
-                    } else {
-                        printf("Dibujando fuego2 en (%d, %d)\n", i, j);
-                        if (mlx_put_image_to_window(data->mlx, data->win,
-                            data->imagenes->fuego2, j * 40, i * 40) != 0) {
-                            printf("Error al dibujar fuego2 en (%d, %d)\n", i, j);
-                        }
-                    }
-                }
-            } else if (data->map[i][j] == '0') {
-                printf("Dibujando espacio en (%d, %d)\n", i, j);
-                if (mlx_put_image_to_window(data->mlx, data->win,
-                    data->imagenes->space, j * 40, i * 40) != 0) {
-                    printf("Error al dibujar espacio en (%d, %d)\n", i, j);
-                }
-            } else if (data->map[i][j] == 'P') {
-                printf("Dibujando jugador en (%d, %d)\n", i, j);
-                if (mlx_put_image_to_window(data->mlx, data->win,
-                    data->imagenes->player_down, j * 40, i * 40) != 0) {
-                    printf("Error al dibujar jugador en (%d, %d)\n", i, j);
-                }
-            } else if (data->map[i][j] == 'C') {
-                printf("Dibujando colectable en (%d, %d)\n", i, j);
-                if (mlx_put_image_to_window(data->mlx, data->win,
-                    data->imagenes->collect, j * 40, i * 40) != 0) {
-                    printf("Error al dibujar colectable en (%d, %d)\n", i, j);
-                }
-            } else if (data->map[i][j] == 'E') {
-                printf("Dibujando salida en (%d, %d)\n", i, j);
-                if (mlx_put_image_to_window(data->mlx, data->win,
-                    data->imagenes->exit, j * 40, i * 40) != 0) {
-                    printf("Error al dibujar salida en (%d, %d)\n", i, j);
-                }
-            } else {
-                printf("Error: Carácter no válido '%c' en (%d, %d)\n", data->map[i][j], i, j);
-            }
+        while (data->map[i][j]) {  // Iterar sobre cada columna en la fila
+            dibujar_elemento_del_mapa(data, i, j, anim_frame);  // Llamar a la nueva función para cada celda
             j++;
         }
         i++;
