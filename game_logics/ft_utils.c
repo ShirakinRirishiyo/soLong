@@ -44,7 +44,7 @@ void ft_game_result(t_mapa *data)
     // Imprime las coordenadas en la consola para depuración
     printf("Dibujando resultado en (%d, %d)\n", x, y);
     
-    mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_down, x, y);
+    mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame1, x, y);
 }
 
 void actualizar_pantalla(t_mapa *data)

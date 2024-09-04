@@ -76,6 +76,7 @@ typedef struct s_mapa {
     int player;  //jugador
     int current_frame;
     int total_frames;
+    int frame_count;
     int animacion_fuego;
     void *background_img;
     int colectables; //cositas para comer
