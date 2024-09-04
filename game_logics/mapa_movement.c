@@ -25,15 +25,14 @@ void move_w(t_mapa *data)
             data->y--;
             data->pasos++;
             write_itoa(data->pasos);
-
-            // Alternar entre frames
+           // Alternar entre frames
             data->frame_count = (data->frame_count + 1) % 3;
             if (data->frame_count == 0)
-                mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_up_frame1, data->x * 40, data->y * 40);
+                mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame1, data->x * 40, data->y * 40);
             else if (data->frame_count == 1)
-                mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_up_frame2, data->x * 40, data->y * 40);
+                mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame2, data->x * 40, data->y * 40);
             else
-                mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_up_frame3, data->x * 40, data->y * 40);
+                mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame3, data->x * 40, data->y * 40);
         }
     }
     else if (data->map[data->y - 1][data->x] == 'E' && data->colectables == 0)
@@ -55,9 +54,16 @@ void move_s(t_mapa *data)
             data->y++;
             data->pasos++;
             write_itoa(data->pasos);
-            mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_down, data->x * 40, data->y * 40);
-        }
-    }
+
+			data->frame_count = (data->frame_count + 1) % 3;
+			if(data->frame_count == 0)
+				mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame1, data->x * 40, data->y * 40);
+			else if(data->frame_count == 1)
+				mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame2, data->x * 40, data->y * 40);
+			else
+				mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame3, data->x * 40, data->y * 40);
+		}
+	}    
     else if (data->map[data->y + 1][data->x] == 'E' && data->colectables == 0)
         data->finish = 1;
     actualizar_pantalla(data);
@@ -76,7 +82,14 @@ void move_d(t_mapa *data)
             data->x++;
             data->pasos++;
             write_itoa(data->pasos);
-            mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_right, data->x * 40, data->y * 40);
+
+			data->frame_count = (data->frame_count + 1) % 3;
+			if(data->frame_count == 0)
+            	mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame1, data->x * 40, data->y * 40);
+			else if(data->frame_count == 1)
+				mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame2, data->x * 40, data->y * 40);
+			else
+				mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame3, data->x * 40, data->y * 40);
         }
     }
     else if (data->map[data->y][data->x + 1] == 'E' && data->colectables == 0)
@@ -97,7 +110,14 @@ void move_a(t_mapa *data)
             data->x--;
             data->pasos++;
             write_itoa(data->pasos);
-            mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_left, data->x * 40, data->y * 40);
+
+			data->frame_count = (data->frame_count + 1) % 3;
+            if(data->frame_count == 0)
+				mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame1, data->x * 40, data->y * 40);
+			else if(data->frame_count == 1)
+				mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame2, data->x * 40, data->y * 40);
+			else
+				mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame3, data->x * 40, data->y * 40);
         }
     }
     else if (data->map[data->y][data->x - 1] == 'E' && data->colectables == 0)

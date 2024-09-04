@@ -45,4 +45,4 @@ fclean: clean
 	make -C ../printf fclean
 	rm -f $(NAME)
 
-re: fclean all
+re: fclean all  

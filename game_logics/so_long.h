@@ -51,6 +51,7 @@ typedef struct s_check
 	int coins_left; //moendas para colectar
 } t_check;
 
+
 typedef struct s_imagenes {
     void *wall;
     void *space;
