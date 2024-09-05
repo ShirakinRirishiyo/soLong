@@ -142,14 +142,6 @@ void movement(t_mapa *data, int move_x, int move_y)
 		data->x += move_x;
 		data->pasos++;
 		write_itoa(data->pasos);
-		// // Alternar entre frames
-		// data->frame_count = (data->frame_count + 1) % 3;
-		// if (data->frame_count == 0)
-		// 	mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame1, data->x * 40, data->y * 40);
-		// else if (data->frame_count == 1)
-		// 	mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame2, data->x * 40, data->y * 40);
-		// else
-		// 	mlx_put_image_to_window(data->mlx, data->win, data->imagenes->player_frame3, data->x * 40, data->y * 40);
 	}
     else if (data->map[data->y + move_y][data->x + move_x] == 'E' && data->colectables == 0)
 		exit_game(data);
