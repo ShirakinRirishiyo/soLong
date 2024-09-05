@@ -3,7 +3,7 @@ NAME = so_long
 
 # Compilador y opciones
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g3
+CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
 INCLUDES = -I./include -I../printf/libft -I../printf
 LIBS = -L../printf -lftprintf -L../printf/libft -lft -L../minilibx-linux -lmlx_Linux -lXext -lX11 -lm
 

@@ -21,14 +21,22 @@
 #include "../minilibx-linux/mlx.h"
 
 
-# define ESC	53
-# define W		13
-# define A		0
-# define S		1
-# define D		2
-# define SPRITE_SIZE 40
+# define ESC	65307
+# define W		119
+# define A		97
+# define S		115
+# define D		100
+# define SPRITE_SIZE 64
 # define BACKGROUND_COLOR 0x00FF00 // Verde puro en formato hexadecimal
 
+// Colorsitos <(nwn)>
+# define RED "\033[0;31m"
+# define BLUE "\033[0;34m"
+# define YELLOW "\033[0;33m"
+# define GREEN "\033[0;32m"
+# define CYAN "\033[0;36m"
+# define WHITE "\033[0;97m"
+# define RESET "\033[0m"
 
 // Definir rutas para las imágenes
 # define WALL_IMAGE "../sprites/house.xpm"
@@ -103,7 +111,8 @@ void move_d(t_mapa *data);
 void move_a(t_mapa *data);
 void    reset_data(t_mapa *data, char *name);
 int	frame_s(t_mapa *data);
-int key_hook(int keycode, t_mapa *data);
+// int key_hook(int keycode, t_mapa *data);
+int key_hook(int keycode, void *param);
 void ft_printear(unsigned int n);
 int exit_game(t_mapa *data);
 void	ft_game_result(t_mapa *data);

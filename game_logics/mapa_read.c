@@ -15,7 +15,7 @@
 
 // Función para manejar fallos de memoria
 void malloc_fail(void) {
-    perror("Memory allocation error");
+    perror("Memory allocation error"); // <<<-- recordar leaks aquiii!!
     exit(EXIT_FAILURE);
 }
 

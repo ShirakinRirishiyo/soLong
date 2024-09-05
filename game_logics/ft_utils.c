@@ -50,6 +50,7 @@ void ft_game_result(t_mapa *data)
 void actualizar_pantalla(t_mapa *data)
 {
     // Redibuja todo el mapa
+	mlx_clear_window(data->mlx, data->win);
     dibujo_mapa(data);
 }
 void actualizar_animacion_fuego(t_mapa *data)

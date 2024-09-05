@@ -27,7 +27,11 @@ void	objetos_de_mapa(t_mapa *data)
 		while (data->map[j][++i])
 		{
 			if (data->map[j][i] == 'P')
+			{
+				data->x = i;
+				data->y = j;
 				data->player++;
+			}
 			if (data->map[j][i] == 'C')
 				data->colectables++;
 			if (data->map[j][i] == 'E')
