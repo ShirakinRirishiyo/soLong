@@ -126,7 +126,7 @@ void objetos_de_mapa(t_mapa *data);
 void caracter_valido(t_mapa *data);
 void comprobacion_open_ber(t_mapa *data);
 int check_rectangular(t_mapa *mapa);
-int verificar_linea(t_mapa *data);
+void verificar_linea(t_mapa *data);
 void check_general(t_mapa *data);
 int es_pared_bordeadora(t_mapa *data, int i, int j);
 void draw_grid(t_mapa *data); 

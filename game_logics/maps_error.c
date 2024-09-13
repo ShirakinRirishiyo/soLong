@@ -6,44 +6,47 @@
 /*   By: dediaz-f <dediaz-f@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 13:20:59 by dediaz-f          #+#    #+#             */
-/*   Updated: 2024/08/10 14:21:46 by dediaz-f         ###   ########.fr       */
+/*   Updated: 2024/09/11 16:11:22 by dediaz-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-
-void	objetos_de_mapa(t_mapa *data)
+typedef struct s_indices
 {
-	int	j;
-	int	i;
-	int	end;
+    int i;
+    int j;
+    int end;
+} t_indices;
 
-	end = 0;
-	j = 0;
-	while (data->map[++j])
-	{
-		i = 0;
-		while (data->map[j][++i])
-		{
-			if (data->map[j][i] == 'P')
-			{
-				data->x = i;
-				data->y = j;
-				data->player++;
-			}
-			if (data->map[j][i] == 'C')
-				data->colectables++;
-			if (data->map[j][i] == 'E')
-				end++;
-		}
-	}
-	if (data->player != 1 || data->colectables < 1 || end != 1)
-	{
-		write(2, "Error\nBad map inputs\n", 21);
-		exit (EXIT_FAILURE);
-	}
+void objetos_de_mapa(t_mapa *data)
+{
+    t_indices indices = {0, 0, 0};  // Inicializar todos los enteros a 0
+
+    while (data->map[++indices.j])
+    {
+        indices.i = 0;
+        while (data->map[indices.j][++indices.i])
+        {
+            if (data->map[indices.j][indices.i] == 'P')
+            {
+                data->x = indices.i;
+                data->y = indices.j;
+                data->player++;
+            }
+            else if (data->map[indices.j][indices.i] == 'C')
+                data->colectables++;
+            else if (data->map[indices.j][indices.i] == 'E')
+                indices.end++;
+        }
+    }
+    if (data->player != 1 || data->colectables < 1 || indices.end != 1)
+    {
+        ft_printf("Error\n");
+        exit(EXIT_FAILURE);
+    }
 }
+
 
 void caracter_valido(t_mapa *data)
 {
@@ -111,34 +114,33 @@ int check_rectangular(t_mapa *mapa)
     if (close(fd) == -1) 
     {
         perror("Error closing file");
-        return -1;
+        return (-1);
     }
     return is_rectangular;
 }
 
-int verificar_linea(t_mapa *data)
+void verificar_linea(t_mapa *data)
 {
     int i;
+    int error;
 
-    // Verificar los bordes superior e inferior
-    for (i = 0; i < data->width; i++)
-    {
-        if (data->map[0][i] != '1' || data->map[data->height - 1][i] != '1')
-        {
-            ft_printf("Error: Bordes horizontales deben ser '1' en posición (%d, %d)\n", (data->map[0][i] != '1') ? 0 : data->height - 1, i);
-            return 0;
-        }
-    }
-
-    // Verificar los bordes izquierdo y derecho
-    for (i = 0; i < data->height; i++)
-    {
-        if (data->map[i][0] != '1' || data->map[i][data->width - 1] != '1')
-        {
-            ft_printf("Error: Bordes verticales deben ser '1' en posición (%d, %d)\n", i, (data->map[i][0] != '1') ? 0 : data->width - 1);
-            return 0;
-        }
-    }
-    
-    return 1;
+    i = 0;
+    error = 0;
+	while (i < data->width)
+	{
+		if (data->map[0][i] != '1' || data->map[data->height - 1][i] != '1')
+			error = 1;
+		i++;
+	}
+	while (i < data->height)
+	{
+		if (data->map[i][0] != '1' || data->map[i][data->width - 1] != '1')
+			error = 1;
+		i++;
+	}
+	if (error != 0)
+	{
+		ft_printf("Error\nMap outline bad\n");
+		exit (EXIT_FAILURE);
+	}
 }

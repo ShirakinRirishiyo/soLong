@@ -12,7 +12,7 @@
 
 #include "so_long.h"
 
-void print_map(t_mapa *data)
+/*void print_map(t_mapa *data)
 {
     int i;
 
@@ -22,7 +22,7 @@ void print_map(t_mapa *data)
         printf("%s\n", data->map[i]);
         i++;
     }
-}
+}*/
 
 int cargar_imagenes(t_mapa *data) 
 {
@@ -136,10 +136,8 @@ int main(int argc, char *argv[])
 	mapa_size(data);
 	printf("Leyendo el mapa...\n");
 	read_map(data);
-
 	printf("Verificando el mapa...\n");
 	check_general(data);
-
 	printf("Creando la ventana...\n");
 	data->win = mlx_new_window(data->mlx, data->width * SPRITE_SIZE, data->height * SPRITE_SIZE, "so_long");
 	if (data->win == NULL) 
@@ -153,10 +151,8 @@ int main(int argc, char *argv[])
 	mlx_key_hook(data->win,/*  2, 0,  */key_hook, (void *)data);
 	frame_s(data);
 	// mlx_loop_hook(data->mlx, frame_s, (void *)data);
-
 	printf("Entrando en el bucle principal...\n");
 	mlx_loop(data->mlx);
-
 	printf("Liberando memoria...\n");
 	// Asegúrate de liberar cualquier memoria adicional que hayas asignado
 	free(data->imagenes);  // Si imagenes es una estructura o un array, debes liberar correctamente cada miembro

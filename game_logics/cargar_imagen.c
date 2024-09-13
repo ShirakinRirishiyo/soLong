@@ -24,7 +24,7 @@ int cargar_imagen(t_mapa *data, void **img, char *ruta) {
     printf("Cargando imagen desde: %s\n", ruta);
     *img = mlx_xpm_file_to_image(data->mlx, ruta, &img_width, &img_height);
     if (*img == NULL) {
-        fprintf(stderr, "Error al cargar la imagen: %s\n", ruta);
+    fprintf(stderr, "Error al cargar la imagen: %s\n", ruta);
         return 1;
     }
 

@@ -66,13 +66,3 @@ void actualizar_animacion_fuego(t_mapa *data)
     }
 }
 
-int write_itoa(int n)
-{
-    char *str = ft_itoa(n);
-    if (str)
-    {
-        write(1, str, ft_strlen(str)); // Cambia esto a tu función de impresión
-        free(str);
-    }
-    return 0;
-}

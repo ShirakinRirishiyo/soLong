@@ -3,7 +3,7 @@ NAME = so_long
 
 # Compilador y opciones
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -g 
 INCLUDES = -I./include -I../printf/libft -I../printf
 LIBS = -L../printf -lftprintf -L../printf/libft -lft -L../minilibx-linux -lmlx_Linux -lXext -lX11 -lm
 
@@ -19,7 +19,7 @@ SRCS = cargar_imagen.c \
 OBJS = $(SRCS:%.c=obj/%.o)
 
 # Reglas
-all: libft libftprintf $(NAME)
+all: libft libftprintf minilibx $(NAME)
 
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) -o $(NAME) $(LIBS)
@@ -33,6 +33,9 @@ libft:
 
 libftprintf:
 	make -C ../printf
+
+minilibx:
+	make -C ../minilibx-linux
 
 clean:
 	make -C ../printf/libft clean
