@@ -1,37 +1,41 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mapa_draw.c                                        :+:      :+:    :+:   */
+/*   mapa_draw_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dediaz-f <dediaz-f@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 12:56:09 by dediaz-f          #+#    #+#             */
-/*   Updated: 2024/07/22 12:56:09 by dediaz-f         ###   ########.fr       */
+/*   Updated: 2024/11/07 12:34:02 by dediaz-f         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
-#include <unistd.h>
-#include <stdio.h>
 #include "so_long.h"
 
-int es_pared_bordeadora(t_mapa *data, int j, int i) {
+int es_pared_bordeadora(t_mapa *data, int j, int i) 
+{
     // Comprobar si la posición está en el borde del mapa
-    if (i == 0 || i == data->height - 1 || j == 0 || j == data->width - 1) {
+    if (i == 0 || i == data->height - 1 || j == 0 || j == data->width - 1) 
+    {
         return 1;  // Verdadero: es una pared bordeadora
     }
     return 0;  // Falso: no es una pared bordeadora
 }
 
 
-void dibujar_elemento(t_mapa *data, void *img, int x, int y) {
-    if (mlx_put_image_to_window(mlx, win, img, x * SPRITE_SIZE, y * SPRITE_SIZE) != 0) {
+void dibujar_elemento(t_mapa *data, void *img, int x, int y) 
+{
+    if (mlx_put_image_to_window(mlx, win, img, x * SPRITE_SIZE, y * SPRITE_SIZE) != 0) 
+    {
         printf("Error al dibujar en (%d, %d)\n", y, x);
     }
 }
 
 
-void dibujar_elemento_del_mapa(t_mapa *data, int i, int j) {
-    switch (data->map[i][j]) {
+void dibujar_elemento_del_mapa(t_mapa *data, int i, int j) 
+{
+    switch (data->map[i][j]) 
+    {
         case '1':
             // if (es_pared_bordeadora(data, j, i))  //por mientras comentamos esto  < nwn >
 			dibujar_elemento(data->mlx, data->win, data->imagenes->wall, j, i);
@@ -62,13 +66,14 @@ void dibujar_elemento_del_mapa(t_mapa *data, int i, int j) {
 	}
 }
 
-
-void dibujo_mapa(t_mapa *data) {
+void dibujo_mapa(t_mapa *data) 
+{
     int i = 0;
     int j;
     // static int anim_frame = 0;
 	printf(GREEN"Coordenadas --> (%d, %d)\n"RESET, data->x, data->y);
-    if (data == NULL || data->map == NULL || data->imagenes == NULL) {
+    if (data == NULL || data->map == NULL || data->imagenes == NULL) 
+    {
         printf("Error: Datos no inicializados.\n");
         return;
     }

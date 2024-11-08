@@ -5,84 +5,82 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dediaz-f <dediaz-f@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/22 12:56:09 by dediaz-f          #+#    #+#             */
-/*   Updated: 2024/07/22 12:56:09 by dediaz-f         ###   ########.fr       */
+/*   Created: 2024/07/09 13:20:59 by dediaz-f          #+#    #+#             */
+/*   Updated: 2024/09/11 16:11:22 by dediaz-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdio.h>
 #include "so_long.h"
 
-int es_pared_bordeadora(t_mapa *data, int j, int i) {
-    // Comprobar si la posición está en el borde del mapa
-    if (i == 0 || i == data->height - 1 || j == 0 || j == data->width - 1) {
-        return 1;  // Verdadero: es una pared bordeadora
-    }
-    return 0;  // Falso: no es una pared bordeadora
-}
-
-
-void dibujar_elemento(void *mlx, void *win, void *img, int x, int y) {
-    if (mlx_put_image_to_window(mlx, win, img, x * SPRITE_SIZE, y * SPRITE_SIZE) != 0) {
-        printf("Error al dibujar en (%d, %d)\n", y, x);
-    }
-}
-
-
-void dibujar_elemento_del_mapa(t_mapa *data, int i, int j) {
-    switch (data->map[i][j]) {
-        case '1':
-            // if (es_pared_bordeadora(data, j, i))  //por mientras comentamos esto  < nwn >
-			dibujar_elemento(data->mlx, data->win, data->imagenes->wall, j, i);
-            // } else {
-            //     dibujar_elemento(data->mlx, data->win, data->imagenes->fuego1, j, i);
-            break;
-        case '0':
-            dibujar_elemento(data->mlx, data->win, data->imagenes->space, j, i);
-            break;
-        case 'P':
-            {
-                // void *player_frames[] = {
-                //     data->imagenes->player_frame1,  // Frame 0
-                //     data->imagenes->player_frame2,// Frame 1
-                //     data->imagenes->player_frame3 // Frame 2
-                // };
-                dibujar_elemento(data->mlx, data->win, data->imagenes->player_frame1, j, i);
-            }
-            break;
-        case 'C':
-            dibujar_elemento(data->mlx, data->win, data->imagenes->collect, j, i);
-            break;
-        case 'E':
-            dibujar_elemento(data->mlx, data->win, data->imagenes->exit, j, i);
-            break;
-        default:
-            printf(RED"Error: Carácter no válido '%c' en (%d, %d)\n"RESET, data->map[i][j], i, j);
+void	dibujar_elemento(t_contxt *ctx, void *img, int x, int y)
+{
+	if (mlx_put_image_to_window(ctx->mlx, ctx->win, img,
+			x * SPRITE_SIZE, y * SPRITE_SIZE) != 0)
+	{
+		ft_printf("Error al dibujar en (%d, %d)\n", y, x);
 	}
 }
 
-
-void dibujo_mapa(t_mapa *data) {
-    int i = 0;
-    int j;
-    // static int anim_frame = 0;
-	printf(GREEN"Coordenadas --> (%d, %d)\n"RESET, data->x, data->y);
-    if (data == NULL || data->map == NULL || data->imagenes == NULL) {
-        printf("Error: Datos no inicializados.\n");
-        return;
-    }
-
-    // anim_frame = (anim_frame + 1) % 3; // Cambiar frame
-
-    printf("Dibujando el mapa...\n");
-    while (data->map[i]) {  // Iterar sobre cada fila del mapa
-        j = 0;
-        while (data->map[i][j]) {  // Iterar sobre cada columna en la fila
-            dibujar_elemento_del_mapa(data, i, j);  // Llamar a la nueva función para cada celda
-            j++;
+void dibujar_elemento_del_mapa(t_contxt *ctx, t_mapa *data, int i, int j)
+{
+    if (data->map[i][j] == '1') {
+        dibujar_elemento(ctx, ctx->imagenes->wall, j, i);
+    } 
+    else if (data->map[i][j] == '0') {
+        dibujar_elemento(ctx, ctx->imagenes->space, j, i);
+    } 
+    else if (data->map[i][j] == 'P') {
+        dibujar_elemento(ctx, ctx->imagenes->player_frame1, j, i);
+    } 
+    else if (data->map[i][j] == 'C') {
+        // Cuando se dibuja un coleccionable, también lo marcamos como recogido
+        dibujar_elemento(ctx, ctx->imagenes->collect, j, i);
+        
+        // Si el jugador está en esta posición, lo recoge
+        if (data->x == j && data->y == i) {
+            printf("¡Coleccionable recogido! (%d, %d)\n", j, i);
+            data->map[i][j] = '0';  // Marca la posición como vacía
+            data->colectables--;  // Disminuye el contador de coleccionables
         }
-        i++;
+    } 
+    else if (data->map[i][j] == 'E') {
+        dibujar_elemento(ctx, ctx->imagenes->exit, j, i);
+    } 
+    else {
+        ft_printf("Error: Carácter no válido '%c' en (%d, %d)\n", data->map[i][j], i, j);
     }
-    printf("Mapa dibujado correctamente.\n");
+}
+
+
+void	dibujo_mapa(t_mapa *data)
+{
+	int			i;
+	int			j;
+	t_contxt	ctx;
+
+	if (data == NULL || data->map == NULL || data->imagenes == NULL)
+	{
+		ft_printf("Error: Datos no inicializados.\n");
+		return ;
+	}
+
+	// Configurar el contexto
+	ctx.mlx = data->mlx;
+	ctx.win = data->win;
+	ctx.imagenes = data->imagenes;
+
+	i = 0;
+	while (data->map[i])  // Iterar por cada fila del mapa
+	{
+		j = 0;
+		while (data->map[i][j])  // Iterar por cada columna en la fila
+		{
+			dibujar_elemento_del_mapa(&ctx, data, i, j);
+			j++;
+		}
+		i++;
+	}
+
+	// Confirmar las coordenadas del jugador
+	ft_printf("Coordenadas del jugador --> (%d, %d)\n", data->x, data->y);
 }
